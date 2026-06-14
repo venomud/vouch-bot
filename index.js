@@ -51,6 +51,8 @@ client.on("messageCreate", (message) => {
 
     // Vérifie que c'est bien un embed Venom Vouches
     if (!embed.title?.includes("New vouch created")) return;
+console.log("FIELDS:", JSON.stringify(embed.fields, null, 2));
+console.log("DESC:", embed.description);
 
     // Parse les fields : "Vouch:", "Vouched by:", "Vouched at:"
     if (embed.fields && embed.fields.length > 0) {
