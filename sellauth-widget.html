@@ -1,0 +1,136 @@
+<!-- ============================================
+  VOUCH WIDGET — colle ce bloc dans ton SellAuth
+  Custom HTML / Custom Page
+
+  REMPLACE : https://TON-BOT.railway.app
+  par l'URL de ton service Railway
+  ============================================ -->
+
+<style>
+  .vouch-section {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 20px;
+    font-family: inherit;
+  }
+
+  .vouch-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 13px;
+    color: #a0a8c0;
+    margin-bottom: 14px;
+  }
+
+  .vouch-label::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #7c6ff7;
+    display: inline-block;
+  }
+
+  .vouch-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px;
+  }
+
+  .vouch-subtitle {
+    color: #6b7694;
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .vouch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .vouch-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+
+  .vouch-card:hover {
+    border-color: rgba(124,111,247,0.4);
+  }
+
+  .vouch-stars {
+    color: #f5c518;
+    font-size: 15px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .vouch-text {
+    color: #c8cfe8;
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .vouch-author {
+    color: #6b7694;
+    font-size: 13px;
+  }
+
+  .vouch-author::before { content: "— "; }
+
+  .vouch-empty {
+    color: #6b7694;
+    font-size: 14px;
+    padding: 20px 0;
+  }
+</style>
+
+<div class="vouch-section">
+  <div class="vouch-label">Testimonials</div>
+  <h2 class="vouch-title">Trusted by Clients</h2>
+  <p class="vouch-subtitle">What people say about our services</p>
+  <div class="vouch-grid" id="vouch-grid">
+    <p class="vouch-empty">Chargement des vouches...</p>
+  </div>
+</div>
+
+<script>
+(async () => {
+  // ⚠️ REMPLACE par ton URL Railway
+  const API_URL = "https://TON-BOT.railway.app/vouches";
+
+  const grid = document.getElementById("vouch-grid");
+
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    if (!data.success || data.vouches.length === 0) {
+      grid.innerHTML = '<p class="vouch-empty">Aucun vouch pour le moment.</p>';
+      return;
+    }
+
+    grid.innerHTML = data.vouches.slice(0, 10).map(v => `
+      <div class="vouch-card">
+        <div class="vouch-stars">${"★".repeat(v.stars)}${"☆".repeat(5 - v.stars)}</div>
+        <p class="vouch-text">"${v.text}"</p>
+        <span class="vouch-author">${v.author}</span>
+      </div>
+    `).join("");
+
+  } catch (e) {
+    grid.innerHTML = '<p class="vouch-empty">Impossible de charger les vouches.</p>';
+    console.error("Vouch fetch error:", e);
+  }
+})();
+</script>
